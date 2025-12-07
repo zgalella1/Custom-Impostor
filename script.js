@@ -177,3 +177,17 @@ function showimposters() {
     }
   });
 }
+
+function returnToMenu() {
+  // Hide final screen
+  document.getElementById("finalScreen").classList.add("hidden");
+
+  // Show setup screen
+  document.getElementById("setupScreen").classList.remove("hidden");
+
+  // Ensure the player list matches the stored names
+  document.getElementById("playerCount").value = playerNames.length;
+
+  // (Optional) Reset nothing else — all values remain in the fields
+}
+
