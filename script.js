@@ -168,7 +168,7 @@ function showimposters() {
   document.getElementById("timerScreen").classList.add("hidden");
   document.getElementById("finalScreen").classList.remove("hidden");
 
-  const list = document.getElementById("isimposter");
+  const list = document.getElementById("imposterList");
   list.innerHTML = "";
 
   roles.forEach(r => {
