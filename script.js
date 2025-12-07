@@ -1,53 +1,98 @@
 let roles = [];
 let currentPlayer = 0;
-let countdownInterval;
+let playerNames = [];
+let timer;
+let countdown = 60;
+
+
+// --------------------------
+// PLAYER LIST MANAGEMENT
+// --------------------------
+
+function openPlayerList() {
+  const count = parseInt(document.getElementById("playerCount").value);
+
+  // Adjust playerNames length
+  while (playerNames.length < count) {
+    playerNames.push("Player " + (playerNames.length + 1));
+  }
+  playerNames = playerNames.slice(0, count);
+
+  renderPlayerList();
+
+  document.getElementById("setupScreen").classList.add("hidden");
+  document.getElementById("playerListScreen").classList.remove("hidden");
+}
+
+function closePlayerList() {
+  // Update list based on fields
+  const inputs = document.querySelectorAll("#playerList input");
+  playerNames = Array.from(inputs).map((i, idx) => i.value || ("Player " + (idx + 1)));
+
+  document.getElementById("playerCount").value = playerNames.length;
+
+  document.getElementById("playerListScreen").classList.add("hidden");
+  document.getElementById("setupScreen").classList.remove("hidden");
+}
+
+function renderPlayerList() {
+  const container = document.getElementById("playerList");
+  container.innerHTML = "";
+
+  playerNames.forEach((name, i) => {
+    container.innerHTML += `
+      <input value="${name}" placeholder="Player ${i + 1}">
+    `;
+  });
+}
+
+function addPlayer() {
+  playerNames.push("Player " + (playerNames.length + 1));
+  renderPlayerList();
+}
+
+
+// --------------------------
+// GAME LOGIC
+// --------------------------
 
 function startGame() {
   const playerCount = parseInt(document.getElementById("playerCount").value);
   const impostorCount = parseInt(document.getElementById("impostorCount").value);
-  const rawWords = document.getElementById("wordList").value;
-  const timerSeconds = parseInt(document.getElementById("timerLength").value);
 
-  const words = rawWords
-    .split(/[\n,]+/)
-    .map(w => w.trim())
-    .filter(Boolean);
+  const wordList = document.getElementById("wordList").value.trim().split("\n");
+  const realWord = wordList[Math.floor(Math.random() * wordList.length)];
 
-  const chosenWord = words[Math.floor(Math.random() * words.length)];
+  const fakeWord = document.getElementById("fakeWord").value;
 
-  // Choose impostors
-  let impostorIndexes = [];
-  while (impostorIndexes.length < impostorCount) {
-    let idx = Math.floor(Math.random() * playerCount);
-    if (!impostorIndexes.includes(idx)) impostorIndexes.push(idx);
+  // Generate impostor positions
+  const impostors = new Set();
+  while (impostors.size < impostorCount) {
+    impostors.add(Math.floor(Math.random() * playerCount));
   }
 
-  // Assign roles
   roles = [];
   for (let i = 0; i < playerCount; i++) {
     roles.push({
-      isImpostor: impostorIndexes.includes(i),
-      word: impostorIndexes.includes(i) ? null : chosenWord
+      name: playerNames[i] || "Player " + (i + 1),
+      isImpostor: impostors.has(i),
+      word: impostors.has(i) ? fakeWord : realWord
     });
   }
 
   currentPlayer = 0;
-  showReveal();
-  switchScreen("setup", "reveal");
+
+  document.getElementById("setupScreen").classList.add("hidden");
+  document.getElementById("revealScreen").classList.remove("hidden");
+
+  showRole();
 }
 
-function showReveal() {
-  document.getElementById("playerHeader").innerText =
-    "Player " + (currentPlayer + 1);
+function showRole() {
+  const r = roles[currentPlayer];
 
-  if (roles[currentPlayer].isImpostor) {
-    document.getElementById("roleText").innerText = "IMPOSTOR";
-    document.getElementById("roleText").style.color = "red";
-  } else {
-    document.getElementById("roleText").innerText =
-      "Word: " + roles[currentPlayer].word;
-    document.getElementById("roleText").style.color = "blue";
-  }
+  document.getElementById("playerHeader").innerText = r.name;
+  document.getElementById("roleText").innerText = r.word;
 }
 
 function nextPlayer() {
@@ -55,36 +100,45 @@ function nextPlayer() {
 
   if (currentPlayer >= roles.length) {
     startTimer();
-    switchScreen("reveal", "timer");
-  } else {
-    showReveal();
+    return;
   }
+
+  showRole();
 }
 
+
+// --------------------------
+// TIMER + FINAL REVEAL
+// --------------------------
+
 function startTimer() {
-  const timerSeconds = parseInt(document.getElementById("timerLength").value);
-  let timeLeft = timerSeconds;
-  const display = document.getElementById("countdown");
+  document.getElementById("revealScreen").classList.add("hidden");
+  document.getElementById("timerScreen").classList.remove("hidden");
 
-  display.innerText = timeLeft;
+  countdown = 60;
+  document.getElementById("timerDisplay").innerText = countdown;
 
-  countdownInterval = setInterval(() => {
-    timeLeft--;
-    display.innerText = timeLeft;
+  timer = setInterval(() => {
+    countdown--;
+    document.getElementById("timerDisplay").innerText = countdown;
 
-    if (timeLeft <= 0) {
-      clearInterval(countdownInterval);
-      display.innerText = "Time's up!";
+    if (countdown <= 0) {
+      clearInterval(timer);
+      document.getElementById("showImpostorsBtn").classList.remove("hidden");
     }
   }, 1000);
 }
 
-function switchScreen(hideId, showId) {
-  document.getElementById(hideId).classList.add("hidden");
-  document.getElementById(showId).classList.remove("hidden");
-}
+function showImpostors() {
+  document.getElementById("timerScreen").classList.add("hidden");
+  document.getElementById("finalScreen").classList.remove("hidden");
 
-function restart() {
-  clearInterval(countdownInterval);
-  switchScreen("timer", "setup");
+  const list = document.getElementById("impostorList");
+  list.innerHTML = "";
+
+  roles.forEach(r => {
+    if (r.isImpostor) {
+      list.innerHTML += `<p>${r.name}</p>`;
+    }
+  });
 }
