@@ -48,12 +48,16 @@ camera</textarea>
 
 
   <!-- Reveal Role Screen -->
-  <div id="revealScreen" class="screen hidden">
-    <h2 id="playerHeader"></h2>
-    <p id="roleText"></p>
+<div id="revealScreen" class="screen hidden">
+  <h2 id="playerHeader"></h2>
 
-    <button onclick="nextPlayer()">Next</button>
-  </div>
+  <p id="roleText" class="hidden"></p>
+
+  <button id="revealButton" onclick="toggleWord()">Show My Word</button>
+
+  <button onclick="nextPlayer()">Next</button>
+</div>
+
 
 
   <!-- Timer Screen -->
