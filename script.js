@@ -58,7 +58,7 @@ function addPlayer() {
 
 function startGame() {
   const playerCount = parseInt(document.getElementById("playerCount").value);
-  const impostorCount = parseInt(document.getElementById("impostorCount").value);
+  const imposterCount = parseInt(document.getElementById("imposterCount").value);
 
   countdown = parseInt(document.getElementById("timerLength").value) || 60;
 
@@ -67,18 +67,18 @@ function startGame() {
 
   const fakeWord = document.getElementById("fakeWord").value;
 
-  // Generate impostor positions
-  const impostors = new Set();
-  while (impostors.size < impostorCount) {
-    impostors.add(Math.floor(Math.random() * playerCount));
+  // Generate imposter positions
+  const imposters = new Set();
+  while (imposters.size < imposterCount) {
+    imposters.add(Math.floor(Math.random() * playerCount));
   }
 
   roles = [];
   for (let i = 0; i < playerCount; i++) {
     roles.push({
       name: playerNames[i] || "Player " + (i + 1),
-      isImpostor: impostors.has(i),
-      word: impostors.has(i) ? fakeWord : realWord
+      isimposter: imposters.has(i),
+      word: imposters.has(i) ? fakeWord : realWord
     });
   }
 
@@ -148,7 +148,7 @@ document.getElementById("timerDisplay").innerText = countdown;
 
     if (countdown <= 0) {
       clearInterval(timer);
-      document.getElementById("showImpostorsBtn").classList.remove("hidden");
+      document.getElementById("showimpostersBtn").classList.remove("hidden");
     }
   }, 1000);
 }
@@ -157,22 +157,22 @@ function stopTimer() {
   clearInterval(timer);
 
   // Show the reveal button immediately
-  document.getElementById("showImpostorsBtn").classList.remove("hidden");
+  document.getElementById("showimpostersBtn").classList.remove("hidden");
 
   // Optionally show "0" on the display
   document.getElementById("timerDisplay").innerText = "0";
 }
 
 
-function showImpostors() {
+function showimposters() {
   document.getElementById("timerScreen").classList.add("hidden");
   document.getElementById("finalScreen").classList.remove("hidden");
 
-  const list = document.getElementById("impostorList");
+  const list = document.getElementById("imposterList");
   list.innerHTML = "";
 
   roles.forEach(r => {
-    if (r.isImpostor) {
+    if (r.isimposter) {
       list.innerHTML += `<p>${r.name}</p>`;
     }
   });
