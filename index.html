@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Impostor Game</title>
+  <title>imposter Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div id="setupScreen" class="screen">
-    <h1>Impostor Game</h1>
+    <h1>imposter Game</h1>
 
     <label>Number of Players</label>
     <input id="playerCount" type="number" value="5" min="3">
 
     <button onclick="openPlayerList()">Edit Player Names</button>
 
-    <label>Number of Impostors</label>
-    <input id="impostorCount" type="number" value="1" min="1">
+    <label>Number of imposters</label>
+    <input id="imposterCount" type="number" value="1" min="1">
 
     <label>Timer Length (seconds)</label>
     <input id="timerLength" type="number" value="60" min="10" max="600">
@@ -29,7 +29,7 @@ bottle
 sandwich
 camera</textarea>
 
-    <label>Impostor Fake Word</label>
+    <label>imposter Fake Word</label>
     <input id="fakeWord" type="text" value="IMPOSTER">
 
     <button onclick="startGame()">Start Game</button>
@@ -65,14 +65,14 @@ camera</textarea>
     <h2>Discussion Timer</h2>
     <div id="timerDisplay">60</div>
     <button onclick="stopTimer()">Stop Timer</button>
-    <button id="showImpostorsBtn" class="hidden" onclick="showImpostors()">Reveal Impostors</button>
+    <button id="showimpostersBtn" class="hidden" onclick="showimposters()">Reveal imposters</button>
   </div>
 
 
   <!-- Final Reveal Screen -->
   <div id="finalScreen" class="screen hidden">
-    <h2>Impostors</h2>
-    <div id="impostorList"></div>
+    <h2>imposters</h2>
+    <div id="imposterList"></div>
   </div>
 
   <script src="script.js"></script>
