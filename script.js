@@ -1,100 +1,21 @@
-//--------------------------------------
-// Game State
-//--------------------------------------
 let roles = [];
 let currentPlayer = 0;
 let countdownInterval;
-let playerNames = [];
 
-
-//--------------------------------------
-// Initialize When Page Loads
-//--------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const playerCountInput = document.getElementById("playerCount");
-  const editNamesBtn = document.getElementById("editNamesBtn");
-  const startBtn = document.getElementById("startBtn");
-
-  // Generate default names based on starting player count
-  generateNameFields();
-
-  // Regenerate name fields when player count changes
-  playerCountInput.addEventListener("input", () => {
-    generateNameFields();
-  });
-
-  // Show/hide name editor
-  editNamesBtn.addEventListener("click", () => {
-    toggleNames();
-  });
-
-  // Start game
-  startBtn.addEventListener("click", () => {
-    startGame();
-  });
-});
-
-
-//--------------------------------------
-// Name Editing Logic
-//--------------------------------------
-function toggleNames() {
-  const container = document.getElementById("nameContainer");
-
-  // If hidden and empty, regenerate (safety)
-  if (!container.children.length) {
-    generateNameFields();
-  }
-
-  container.classList.toggle("hidden");
-}
-
-function generateNameFields() {
-  const count = parseInt(document.getElementById("playerCount").value) || 3;
-  const container = document.getElementById("nameContainer");
-
-  container.innerHTML = ""; // Wipe old fields
-  playerNames = [];
-
-  for (let i = 0; i < count; i++) {
-    const input = document.createElement("input");
-    input.placeholder = "Player " + (i + 1);
-    input.className = "name-field";
-    input.value = "Player " + (i + 1);
-
-    // Store value
-    playerNames[i] = input.value;
-
-    input.addEventListener("input", () => {
-      playerNames[i] = input.value || ("Player " + (i + 1));
-    });
-
-    container.appendChild(input);
-  }
-}
-
-
-//--------------------------------------
-// Game Setup
-//--------------------------------------
 function startGame() {
   const playerCount = parseInt(document.getElementById("playerCount").value);
   const impostorCount = parseInt(document.getElementById("impostorCount").value);
   const rawWords = document.getElementById("wordList").value;
+  const timerSeconds = parseInt(document.getElementById("timerLength").value);
 
   const words = rawWords
     .split(/[\n,]+/)
     .map(w => w.trim())
     .filter(Boolean);
 
-  const chosenWord = words[Math.floor(Math.random() * words.length)] || "WORD";
+  const chosenWord = words[Math.floor(Math.random() * words.length)];
 
-  // Ensure playerNames is filled
-  for (let i = 0; i < playerCount; i++) {
-    if (!playerNames[i]) playerNames[i] = "Player " + (i + 1);
-  }
-
-  // Random impostor selection
+  // Choose impostors
   let impostorIndexes = [];
   while (impostorIndexes.length < impostorCount) {
     let idx = Math.floor(Math.random() * playerCount);
@@ -105,34 +26,27 @@ function startGame() {
   roles = [];
   for (let i = 0; i < playerCount; i++) {
     roles.push({
-      name: playerNames[i],
       isImpostor: impostorIndexes.includes(i),
       word: impostorIndexes.includes(i) ? null : chosenWord
     });
   }
 
   currentPlayer = 0;
-
   showReveal();
   switchScreen("setup", "reveal");
 }
 
-
-//--------------------------------------
-// Reveal Screen
-//--------------------------------------
 function showReveal() {
-  const header = document.getElementById("playerHeader");
-  const roleText = document.getElementById("roleText");
-
-  header.innerText = roles[currentPlayer].name;
+  document.getElementById("playerHeader").innerText =
+    "Player " + (currentPlayer + 1);
 
   if (roles[currentPlayer].isImpostor) {
-    roleText.innerText = "IMPOSTOR";
-    roleText.style.color = "red";
+    document.getElementById("roleText").innerText = "IMPOSTOR";
+    document.getElementById("roleText").style.color = "red";
   } else {
-    roleText.innerText = "Word: " + roles[currentPlayer].word;
-    roleText.style.color = "blue";
+    document.getElementById("roleText").innerText =
+      "Word: " + roles[currentPlayer].word;
+    document.getElementById("roleText").style.color = "blue";
   }
 }
 
@@ -147,9 +61,30 @@ function nextPlayer() {
   }
 }
 
-
-//--------------------------------------
-// Timer Screen
-//--------------------------------------
 function startTimer() {
-  const
+  const timerSeconds = parseInt(document.getElementById("timerLength").value);
+  let timeLeft = timerSeconds;
+  const display = document.getElementById("countdown");
+
+  display.innerText = timeLeft;
+
+  countdownInterval = setInterval(() => {
+    timeLeft--;
+    display.innerText = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(countdownInterval);
+      display.innerText = "Time's up!";
+    }
+  }, 1000);
+}
+
+function switchScreen(hideId, showId) {
+  document.getElementById(hideId).classList.add("hidden");
+  document.getElementById(showId).classList.remove("hidden");
+}
+
+function restart() {
+  clearInterval(countdownInterval);
+  switchScreen("timer", "setup");
+}
