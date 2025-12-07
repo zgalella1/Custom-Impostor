@@ -94,8 +94,28 @@ function showRole() {
   const r = roles[currentPlayer];
 
   document.getElementById("playerHeader").innerText = r.name;
-  document.getElementById("roleText").innerText = r.word;
+
+  const roleText = document.getElementById("roleText");
+  roleText.innerText = r.word;
+  roleText.classList.add("hidden");
+
+  const button = document.getElementById("revealButton");
+  button.innerText = "Show My Word";
 }
+
+function toggleWord() {
+  const roleText = document.getElementById("roleText");
+  const button = document.getElementById("revealButton");
+
+  if (roleText.classList.contains("hidden")) {
+    roleText.classList.remove("hidden");
+    button.innerText = "Hide My Word";
+  } else {
+    roleText.classList.add("hidden");
+    button.innerText = "Show My Word";
+  }
+}
+
 
 function nextPlayer() {
   currentPlayer++;
@@ -132,6 +152,17 @@ document.getElementById("timerDisplay").innerText = countdown;
     }
   }, 1000);
 }
+
+function stopTimer() {
+  clearInterval(timer);
+
+  // Show the reveal button immediately
+  document.getElementById("showImpostorsBtn").classList.remove("hidden");
+
+  // Optionally show "0" on the display
+  document.getElementById("timerDisplay").innerText = "0";
+}
+
 
 function showImpostors() {
   document.getElementById("timerScreen").classList.add("hidden");
