@@ -1,47 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Impostor Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impostor Word Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div id="setup" class="screen">
-  <h1>Impostor Game</h1>
+  <!---------------------------
+      SETUP SCREEN
+  ---------------------------->
+  <div id="setup" class="screen">
+    <h1>Impostor Game</h1>
 
-  <label># Players</label>
-<input id="playerCount" type="number" value="5" min="3" oninput="generateNameFields()">
+    <label># Players</label>
+    <input id="playerCount" type="number" value="5" min="3">
 
-<button onclick="toggleNames()">Edit Player Names</button>
+    <label># Impostors</label>
+    <input id="impostorCount" type="number" value="1" min="1">
 
-<div id="nameContainer" class="hidden"></div>
+    <button id="editNamesBtn" type="button">Edit Player Names</button>
 
+    <div id="nameContainer" class="hidden"></div>
 
-  <label># Impostors</label>
-  <input id="impostorCount" type="number" value="1" min="1">
+    <label>Word List</label>
+    <textarea id="wordList" placeholder="Enter words separated by commas or new lines"></textarea>
 
-  <label>Discussion Timer (seconds)</label>
-  <input id="timerLength" type="number" value="90" min="10">
+    <label>Timer Length (seconds)</label>
+    <input id="timerLength" type="number" value="60" min="10">
 
-  <label>Word List</label>
-  <textarea id="wordList" rows="5">apple, castle, astronaut, coffee, concert</textarea>
-
-  <button onclick="startGame()">Start Game</button>
-</div>
-
-<div id="reveal" class="screen hidden">
-  <h2 id="playerHeader"></h2>
-  <h1 id="roleText"></h1>
-  <button onclick="nextPlayer()">Next</button>
-</div>
-
-<div id="timer" class="screen hidden">
-  <h1>Discussion Timer</h1>
-  <div id="countdown" class="big"></div>
-  <button onclick="restart()">New Game</button>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
