@@ -13,6 +13,14 @@
   <label># Players</label>
   <input id="playerCount" type="number" value="5" min="3">
 
+  <label># Players</label>
+<input id="playerCount" type="number" value="5" min="3" oninput="generateNameFields()">
+
+<button onclick="toggleNames()">Edit Player Names</button>
+
+<div id="nameContainer" class="hidden"></div>
+
+
   <label># Impostors</label>
   <input id="impostorCount" type="number" value="1" min="1">
 
