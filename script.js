@@ -60,6 +60,8 @@ function startGame() {
   const playerCount = parseInt(document.getElementById("playerCount").value);
   const impostorCount = parseInt(document.getElementById("impostorCount").value);
 
+  countdown = parseInt(document.getElementById("timerLength").value) || 60;
+
   const wordList = document.getElementById("wordList").value.trim().split("\n");
   const realWord = wordList[Math.floor(Math.random() * wordList.length)];
 
@@ -115,7 +117,9 @@ function startTimer() {
   document.getElementById("revealScreen").classList.add("hidden");
   document.getElementById("timerScreen").classList.remove("hidden");
 
-  countdown = 60;
+// countdown is already set in startGame()
+document.getElementById("timerDisplay").innerText = countdown;
+
   document.getElementById("timerDisplay").innerText = countdown;
 
   timer = setInterval(() => {
